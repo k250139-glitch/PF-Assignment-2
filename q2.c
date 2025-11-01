@@ -1,221 +1,96 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
-#include <ctype.h>
-#include <string.h>
+int main() {
+    printf("Product code\n");
 
-struct User
-{
+    int code = 0;
+    int flag = 1;
+    int quantity = 0;
+    int bill = 0;
+    int total = 0;
+    int voucher = 0;
+
     char name[50];
-    long long int cnic;
+    char cnic[20];
+
+    input(name, cnic);
+
+  int arr[4][3] = {
+    {1, 50, 100},
+    {2, 10, 200},
+    {3, 20, 300},
+    {4, 8, 150}
 };
+printf("\n-----------------------------------------------\n");
+printf("Product code\tQuantity in stock\tPrice per product\n");
+printf("-----------------------------------------------\n");
 
-struct  User user;
+for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 3; j++) {
+        if (j == 0)
+            printf("   %d\t\t\t", arr[i][j]);  
+        else
+            printf("%d\t\t\t", arr[i][j]);
+    }
+    printf("\n");  
+}
 
-int login();
-void customerInfo();
-int getSize(long long int cnic);
-void displaInventory();
-int updateInventory(int upDatedPD,int to);
-int addItemT0Cart(int productCodeInCart[],int QuantutyOfProductInCart[],int itemsNumber);
-void showBill(int pcic[],int qpic[],float disCount,int countItem);
+printf("-----------------------------------------------\n");
 
-int productCode[4]={001,002,003,004};
-int quantityInStock[4]={50,10,20,8};
-int pricePerProduct[4]={100,200,300,150};
+    while (1) {
+        printf("Input num of product you want (type 0 to end order): ");
+        scanf("%d", &code);
 
-int main(){
-    int itemsNumber;
-    int productCodeInCart[itemsNumber];
-    int QuantutyOfProductInCart[itemsNumber];
-    int chose;
-
-    char promocode,promocodeCOde[10];
-    bool promocodeOK=false;
-    int c;
-
-    login();
-    while(true){
-    printf("\n");
-    printf("What Would you like to perform?\n");
-    printf("1. View Customer Information\n");
-    printf("2. Display Invetory\n");
-    printf("3. Add item to cart\n");
-    printf("4. Display Total Bill\n");
-    printf("5. SHow Invoice\n");
-    printf("6. Exit\n");
-    printf("Chose: ");
-    while ((c=getchar()),c != '\n' && c != EOF);
-    scanf("%d",&chose);
-    switch(chose)
-    {
-    case 1:
-        customerInfo();
-        break;
-    case 2:
-        displaInventory();
-        break;
-    case 3:
-        int itemsNumber;
-        againitemsNumber:
-        printf("How many item you want to add to your cart: ");
-        while((c=getchar()),c != '\n' && c != EOF);
-        scanf("%d",&itemsNumber);
-        if(itemsNumber<0){
-            printf("\nInvalid input\n");
-            goto againitemsNumber;
+        if (code == 0) {
+            flag = 0;
+            break;
         }
-        addItemT0Cart(productCodeInCart,QuantutyOfProductInCart,itemsNumber);
-        break;
-    case 4:
-        promocodeOK=false;
-        againPromocode1:
-        while((c=getchar()),c != '\n' && c != EOF);
-        printf("\nDO you have any promocode? (Y/N): ");
-        scanf(" %c",&promocode);
-        if(toupper(promocode)=='Y'){
-            printf("Enter Code: ");
-            scanf("%s",promocodeCOde);
-            if(strcmp(promocodeCOde,"Eid2025")==0){
-                promocodeOK=true;
-            }else{
-                printf("Invalid promocode.\n");
-                goto againPromocode1;
-            }
+
+        printf("Input quantity: ");
+        scanf("%d", &quantity);
+
+        if (code == 1) {
+            arr[0][1] -= quantity;               
+            bill = quantity * arr[0][2];
+            total += bill;
+        } else if (code == 2) {
+            arr[1][1] -= quantity;
+            bill = quantity * arr[1][2];
+            total += bill;
+        } else if (code == 3) {
+            arr[2][1] -= quantity;
+            bill = quantity * arr[2][2];
+            total += bill;
+        } else if (code == 4) {
+            arr[3][1] -= quantity;
+            bill = quantity * arr[3][2];
+            total += bill;
+        } else {
+            printf("Invalid product code!\n");
         }
-            printf("\nFinall Bill: \n");
-            if(promocodeOK){
-                showBill(productCodeInCart,QuantutyOfProductInCart,0.25,itemsNumber);
-            }else{
-                showBill(productCodeInCart,QuantutyOfProductInCart,0.0,itemsNumber);
-            }
-        break;
-    case 5:
-        promocodeOK=false;
-        againPromocode:
-        while((c=getchar()),c != '\n' && c != EOF);
-        printf("\nDO you have any promocode? (Y/N): ");
-        scanf(" %c",&promocode);
-        if(toupper(promocode)=='Y'){
-            printf("Enter Code: ");
-            scanf("%s",promocodeCOde);
-            if(strcmp(promocodeCOde,"Eid2025")==0){
-                promocodeOK=true;
-            }else{
-                printf("Invalid promocode.\n");
-                goto againPromocode;
-            }
+    }
+
+    if (flag == 0) {
+        printf("Have you got any vouchers?\n");
+        printf("We are offering EID discount!\n");
+        printf("Enter your voucher code: ");
+        scanf("%d", &voucher);
+
+        if (voucher == 2334) {
+            printf("\nYou have availed your discount of 25%%");
+            printf("\n----------------------------------------\n");
+            printf("\nTOTAL BILL\n");
+            printf("Original bill: %d\n", total);
+            printf("After discount: %.2f\n", total * 0.75);
+        } else {
+            printf("\n----------------------------------------\n");
+            printf("\nTOTAL BILL\n");
+            printf("Original bill: %d\n", total);
         }
-        printf("Customer Name: %s\t\t Customer CNIC %lld",user.name,user.cnic);
-        printf("\nFinall Bill: \n");
-        if(promocodeOK){
-                showBill(productCodeInCart,QuantutyOfProductInCart,0.25,itemsNumber);
-            }else{
-                showBill(productCodeInCart,QuantutyOfProductInCart,0.0,itemsNumber);
-            }
-        break;
-    case 6:
+
+        printf("\n----------------------------------------\n");
+        printf("Customer Name: %s\n", name);
+        printf("CNIC: %s\n", cnic);
+        printf("Final Payable Amount: %d\n", total);
+    }
+
     return 0;
-        printf("\nBye bye");
-        break;
-    default:
-        printf("Invalid Choice\nTry Again\n\n");
-        break;
-    }
-}
-    return 0;
-}
-void customerInfo(){
-        printf("\nUser Name: %s\n",user.name);
-        printf("User CNIC: %lld\n\n",user.cnic);
-}
-int login(){
-    printf("Name of customer: ");
-    scanf("%[^\n]",&user.name);
-    againCNIC:
-    printf("CNIC number of the customer (Without dashesh[-]): ");
-    int c;
-    while((c=getchar()),c != '\n' && c != EOF);
-    if(scanf("%lld",&user.cnic)!=1){
-        printf("\nInvalid CNIC number.\n");
-        goto againCNIC;
-    }
-    if(getSize(user.cnic)!=13){
-        printf("\nInvalid CNIC number.\n");
-        goto againCNIC;
-    }
-    return 0;
-}
-void displaInventory(){
-    printf("Product code\tQuantity of product\tQuantity Per Product\n");
-    for(int j=0;j<4;j++){
-        printf("%d\t\t%d\t\t\t%d\n",productCode[j],quantityInStock[j],pricePerProduct[j]);
-    }
-}
-int updateInventory(int upDatedPD,int to){
-    if(to<0) return 0;
-    for(int i=0;i<4;i++){
-        if(productCode[i]==upDatedPD){
-            if(quantityInStock[i]<=to){
-                return 0;
-            }else{
-                quantityInStock[i] -= to;
-                return 1;
-            }
-        }
-    }
-}
-int addItemT0Cart(int productCodeInCart[],int QuantutyOfProductInCart[],int itemsNumber){
-    int tempProductCodeInCart,c;
-    bool codeExist=false;
-    for(int i=0;i<itemsNumber;i++){
-        againPC:
-        printf("\nProduct %d, Item code: ",i+1);
-        while((c=getchar()),c != '\n' && c != EOF);
-        scanf("%d",&tempProductCodeInCart);
-        for(int j=0;j<4;j++){
-            if(productCode[j]==tempProductCodeInCart){
-                codeExist=true;
-                productCodeInCart[i]=tempProductCodeInCart;
-            }
-        }
-        if(!codeExist){
-            printf("\nInvalid Product Code\nTry Again\n");
-            goto againPC;
-        }
-        againQuantutyOfProductInCart:
-        printf("Product %d, Quantity of product: ",i+1);
-        int c;
-        while((c=getchar()),c != '\n' && c != EOF);
-        scanf("%d",&QuantutyOfProductInCart[i]);
-        if(!updateInventory(productCodeInCart[i],QuantutyOfProductInCart[i])){
-            printf("An error occur while updating inventory.\nCheck weather the buying quantity exceed or is the same as the quantity in stock.\n\n");
-            goto againQuantutyOfProductInCart;
-        }
-    }
-    return 0;
-}
-void showBill(int pcic[],int qpic[],float disCount,int countItem){
-    float total=0.0;
-    printf("Product code\tQuantity of product\tQuantity Per Product\n");
-    for(int j=0;j<countItem;j++){
-        printf("%d\t\t%d\t\t\t%d\n",pcic[j],qpic[j],(pricePerProduct[j]*qpic[j]));
-        total += (pricePerProduct[j]*qpic[j]);
-    }
-    if(disCount!=0.0){
-        printf("Total\t\t\t\t\t%.2f\n",total);
-        printf("Discount\t\t\t\t%.2f\n",(total*disCount));
-        printf("Final Bill\t\t\t\t%.2f\n",total-(total*disCount));
-    }else{
-        printf("Total\t\t\t\t\t%.2f\n",total);
-    }
-}
-
-int getSize(long long int cnic){
-    int size=0;
-    while(cnic>0){
-        size++;
-        cnic /=10;
-    }
-    return size;
 }
